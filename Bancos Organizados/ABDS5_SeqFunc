@@ -54,4 +54,23 @@ return resultado;
 end;
 $$
 language plpgsql;
-select f_InsereFuncionario ('5221', 'Paulo Afonso', 'Rua das Acácias', 'Votuporanga', 9811);					
+
+select f_InsereFuncionario ('5221', 'Paulo Afonso', 'Rua das Acácias', 'Votuporanga', 9811);
+
+create or replace function f_salario_registro() returns trigger
+as $$
+begin
+insert into seq_salario_registro
+values (nextval('sid_salreg'), new.func_id, new.func_salario,current_date);
+return null;
+end;
+$$ language plpgsql;
+
+create trigger tr_salario_registro
+after insert or update
+on seq_funcionario for each row
+execute procedure f_salario_registro()
+
+insert into seq_funcionario values (2, '321', 'Pedro da Silva', 'Rua A', 'Votuporanga', 4000);
+update seq_funcionario set func_salario = 6000;
+

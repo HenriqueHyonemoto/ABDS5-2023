@@ -627,3 +627,38 @@ insert into item_pedido
 -- Confirmando alterações 
 
 commit;
+
+--Realizando as alterações no banco de dados após ele ser instalado
+
+
+--Adicionando campo de senha na tabela vendedor
+
+
+
+update produto
+set quantidade =  10;
+
+update produto
+set qtde_minima =  5;
+
+update produto
+set valor_custo =  3;
+
+
+
+update item_pedido ip
+	set valor_custo = (select valor_custo
+								from produto p
+							  where ip.codigo_produto = p.codigo_produto),
+		 valor_venda = (select valor_venda
+								from produto p
+							  where ip.codigo_produto = p.codigo_produto);
+--Atualizando o valor total de pedidos
+update pedido pe
+	set total_pedido = (select sum((quantidade* valor_venda))
+							 	 from item_pedido ip
+							  	where ip.num_pedido  = pe.num_pedido
+							 	group by ip.num_pedido );
+
+update produto
+set comissao_produto = 0.005;

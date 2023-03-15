@@ -175,46 +175,34 @@ values (1,3,'L-16');
 insert into Devedor
 values (4,3,'L-15');
 
---Realizando as alterações no banco de dados após ele ser instalado
-
-
---Adicionando campo de senha na tabela vendedor
-
-
-
-update produto
-set quantidade =  10;
-
-update produto
-set qtde_minima =  5;
-
-update produto
-set valor_custo =  3;
-
-
-
-update item_pedido ip
-	set valor_custo = (select valor_custo
-								from produto p
-							  where ip.codigo_produto = p.codigo_produto),
-		 valor_venda = (select valor_venda
-								from produto p
-							  where ip.codigo_produto = p.codigo_produto);
-
-
-update produto
-set comissao_produto = 0.005;
-
-
-
---Atualizando o valor total de pedidos
-update pedido pe
-	set total_pedido = (select sum((quantidade* valor_venda))
-							 	 from item_pedido ip
-							  	where ip.num_pedido  = pe.num_pedido
-							 	group by ip.num_pedido );
 
 
 -- Salvando os Dados 
 
 commit;
+
+create or replace function f_verifica_horario() returns trigger
+as
+$$
+begin
+IF extract (hour from current_time) NOT BETWEEN 10 AND 15 THEN
+raise 'Operação não pode ser executada fora do horário bancário' using ERRCODE =
+'EHO01';
+end if;
+if new.numero_Con = 'xxx' then
+raise 'Operação não pode ser executada com valor xxx' using ERRCODE = 'EH02';
+end if;
+return new;
+end;
+$$
+language plpgsql;
+
+
+
+create trigger trg_verifica_horario
+before insert or update or delete
+on conta for each row
+execute procedure f_verifica_horario();
+
+insert into conta values (3, 'A-120', 600);
+insert into conta values (4, 'xxx', 600);
