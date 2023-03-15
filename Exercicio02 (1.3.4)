@@ -1,0 +1,86 @@
+--drop table obra
+create table obra (
+        id_obra serial,
+        codigo varchar(5) unique,
+        descricao varchar(20),
+        constraint pk_obra primary key (id_obra));
+		
+SELECT * FROM obra;
+
+create sequence sid_obra;
+
+select sequence_name from information_schema.sequences;
+
+insert into obra values 
+(nextval('sid_obra'),'OB111','Edificio'),
+(nextval('sid_obra'),'OB222','Condominio');
+-----------------------------------
+--drop table maquina cascade
+create table maquina (
+        id_maquina serial,
+        codigo varchar(5) unique,
+        marca varchar(20),
+        constraint pk_maquina primary key (id_maquina));
+		
+SELECT * FROM maquina;
+
+create sequence sid_maquina;
+
+insert into maquina values (nextval('sid_obra'),'MA001','Hitachi'),
+(nextval('sid_obra'),'MA002','Volvo CE');
+
+-----------------------------------
+
+ --drop table usa
+create table usa (
+        id_usa serial,
+        id_obra int,
+        id_maquina int, 
+		data_uso date,
+        constraint pk_usa primary key (id_usa),
+        constraint fk_usa_maquina foreign key (id_maquina)
+                references maquina,
+        constraint fk_usa_obra foreign key (id_obra)
+                references obra,
+        constraint un_usa unique (id_obra, id_maquina)
+	
+        );
+		
+SELECT * FROM usa;
+
+create sequence sid_usa;
+
+
+insert into usa values (
+nextval('sid_usa'),	
+(select id_obra from obra where codigo='OB111'),
+(select id_maquina from maquina where codigo = 'MA001'),
+'04/08/2003'
+);
+
+insert into usa values (
+nextval('sid_usa'),	
+(select id_obra from obra where codigo='OB111'),
+(select id_maquina from maquina where codigo = 'MA002'),
+'04/08/2003'
+);
+
+insert into usa values (
+nextval('sid_usa'),	
+(select id_obra from obra where codigo='OB222'),
+(select id_maquina from maquina where codigo = 'MA001'),
+'05/09/2003'
+);
+
+insert into usa values (
+nextval('sid_usa'),	
+(select id_obra from obra where codigo='OB222'),
+(select id_maquina from maquina where codigo = 'MA002'),
+'05/09/2003'
+);
+
+select * from usa;
+
+		
+		
+		
