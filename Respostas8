@@ -1,0 +1,16 @@
+1-> CREATE USER userexe1 WITH PASSWORD '12345678';
+2-> ALTER USER userexe1 WITH NOLOGIN
+3-> ALTER USER userexe1 WITH LOGIN;
+4-> CREATE DATABASE SIGASYS WITH OWNER postgres;
+    \i /home/aluno/abds5/00_criabaseBD_Postgres.sql
+5a-> CREATE USER secretaria WITH PASSWORD 'postdba';
+5b-> CREATE USER vendedor WITH PASSWORD 'postdba';   
+     GRANT SELECT, UPDATE, INSERT ON clienteTO vendedor;
+     GRANT SELECT, UPDATE, INSERT, DELETE ON pedito TO vendedor;
+5c-> CREATE USER gerente WITH PASSWORD 'postdba';   
+6-> REVOKE ALL ON cliente FROM analista;
+7-> CREATE DATABASE dbvendedor OWNER = vendedor;
+    psql -h 172.17.0.1 -U userexe1 -d dbvendedor;
+    CREATE TABLE tabelaex7(id integer);
+8-> REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM userexe1;
+    DROP USER userexe1;
