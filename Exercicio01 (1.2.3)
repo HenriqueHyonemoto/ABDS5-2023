@@ -1,0 +1,31 @@
+--Os correntistas devem ser maiores que 18 anos. Para isso, você deve comparar a data de nascimento com a data atual. No Postgres, para saber a idade atual, use a função ((CURRENT_DATE -data_nasc)/365>=18) ou use a função (AGE(CURRENT_DATE, data_nasc) >= ’18 Y’)).
+create table correntista(
+cpf varchar(11),
+nome varchar(60),
+data_nasc date,
+cidade varchar(20),
+uf varchar(2),
+constraint pk_correntista primary key(cpf),
+constraint ck_idade_correntista check((CURRENT_DATE - data_nasc)/365>=18) 
+)
+
+insert into correntista values ('124', 'aaa', '30/12/2008','Votuporanga', 'SP');
+insert into correntistavalues ('123', 'joao', '30/12/2000','Votuporanga', 'SP');
+
+
+select * from correntista
+
+--Uma conta corrente só pode ser aberta com saldo mínimo inicial de R$ 500,00.
+create table conta_corrente(
+num_Conta integer,
+cpf_correntista varchar(11),
+saldo real,
+constraint pk_conta_corrente primary key(num_conta),
+constraint fk_conta_corrente foreign key(cpf_correntista) references correntista,
+constraint ck_saldo check(saldo>=500)
+)
+
+insert into conta_corrente values (1,'123', 40);
+insert into conta_corrente values (1,'123', 600);
+
+select * from conta_corrente
